@@ -18,15 +18,24 @@ export class Buyer implements IBuyer {
     this.address = address;
   }
 
-  // temporary validation
-  userDataValidation(): boolean {
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
-    const phoneOk = this.phone.replace(/\D/g, "").length >= 7;
-    const addressOk = this.address.trim().length > 0;
-    const paymentOk =
-      this.payment === "card" || this.payment === "cash" || this.payment === "";
-    return emailOk && phoneOk && addressOk && paymentOk;
+  validateAddress(): boolean {
+    return this.address.trim().length > 0;
   }
+
+  validatePayment(): boolean {
+    return this.payment === "card" || this.payment === "cash";
+  }
+
+  validateContacts(): boolean {
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+    const phoneOk = /^\+?\d{7,15}$/.test(this.phone.replace(/\s+/g, ""));
+    return emailOk && phoneOk;
+  }
+
+  validateAll(): boolean {
+    return this.validateAddress() && this.validatePayment() && this.validateContacts();
+  }
+
 
   getUserData(): IBuyer {
     return {

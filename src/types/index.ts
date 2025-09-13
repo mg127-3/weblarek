@@ -26,9 +26,14 @@ export interface IBuyer {
 }
 
 export interface IOrderRequest {
-  products: string[];
-  buyer: IBuyer;
+  items: string[];
+  payment: 'card' | 'cash';
+  address: string;
+  email: string;
+  phone: string;
+  total: number;
 }
+
 
 export interface IOrderResponse {
   success: boolean;

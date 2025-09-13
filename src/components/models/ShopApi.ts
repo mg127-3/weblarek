@@ -2,11 +2,7 @@ import { Api } from "../base/Api";
 import { IProduct, IOrderRequest, IOrderResponse } from "../../types";
 
 export class ShopApi {
-  private api: Api;
-
-  constructor(api: Api) {
-    this.api = api;
-  }
+  constructor(private api: Api) { }
 
   getProducts(): Promise<IProduct[]> {
     return this.api

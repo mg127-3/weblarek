@@ -4,14 +4,15 @@ export class Cart {
   private productsList: IProduct[] = [];
 
   setProductsList(products: IProduct[]): void {
-    this.productsList = [...products];
+    this.productsList = products;
   }
 
-  getProductsList(): IProduct[] {
-    return [...this.productsList];
+  getCartProductsList(): IProduct[] {
+    return this.productsList;
   }
 
   addProductToCart(product: IProduct): void {
+    if (this.getProductAvailability(product.id)) return;
     this.productsList.push(product);
   }
 
@@ -21,10 +22,6 @@ export class Cart {
 
   getCartProductQuantity(): number {
     return this.productsList.length;
-  }
-
-  getCartProductsList(): IProduct[] {
-    return [...this.productsList];
   }
 
   getCartProductPrice(): number {
