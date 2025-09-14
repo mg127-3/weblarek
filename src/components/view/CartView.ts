@@ -1,4 +1,3 @@
-// src/components/models/Basket.ts
 import { Component } from '../base/Component';
 import { IEvents } from '../base/Events';
 import { ensureElement } from '../../utils/utils';

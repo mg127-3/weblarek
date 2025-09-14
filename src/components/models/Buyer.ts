@@ -1,4 +1,4 @@
-import { IBuyer } from "../../types";
+import { IBuyer, IValidationResult } from "../../types";
 
 export class Buyer implements IBuyer {
   payment: "card" | "cash" | "";
@@ -18,24 +18,33 @@ export class Buyer implements IBuyer {
     this.address = address;
   }
 
-  validateAddress(): boolean {
-    return this.address.trim().length > 0;
+  validateAddress(): IValidationResult {
+    if (!this.address.trim()) {
+      return {valid: false, message: "Укажите адрес доставки"};
+    }
+    return {valid: true}
   }
 
-  validatePayment(): boolean {
-    return this.payment === "card" || this.payment === "cash";
+  validatePayment(): IValidationResult {
+    if (this.payment !== "card" && this.payment !== "cash") {
+      return {valid: false, message: "Выберите способ оплаты"};
+    }
+    return {valid: true};
   }
 
-  validateContacts(): boolean {
+  validateContacts(): IValidationResult {
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
     const phoneOk = /^\+?\d{7,15}$/.test(this.phone.replace(/\s+/g, ""));
-    return emailOk && phoneOk;
+    if (!emailOk) return {valid: false, message: "Введите корректный email"};
+    if (!phoneOk) return {valid: false, message: "Введите корректный номер телефона"};
+    return {valid: true}
   }
 
   validateAll(): boolean {
-    return this.validateAddress() && this.validatePayment() && this.validateContacts();
+    return (
+      this.validateAddress().valid && this.validatePayment().valid && this.validateContacts().valid
+    )
   }
-
 
   getUserData(): IBuyer {
     return {

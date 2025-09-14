@@ -2,12 +2,12 @@
 import { BaseCard, IBaseCardData } from './BaseCard';
 import { IEvents } from '../base/Events';
 
-export interface ICartItems extends IBaseCardData {
+export interface ICartItem extends IBaseCardData {
   price: number;
   index: number;
 }
 
-export class CartItems extends BaseCard<ICartItems> {
+export class CartItem extends BaseCard<ICartItem> {
   protected indexEl: HTMLElement;
   protected priceEl: HTMLElement;
   protected deleteBtn: HTMLButtonElement;
@@ -29,7 +29,7 @@ export class CartItems extends BaseCard<ICartItems> {
     });
   }
 
-  set data(p: ICartItems) {
+  set data(p: ICartItem) {
     super.data = p;
     this.index = p.index;
     this.price = p.price;

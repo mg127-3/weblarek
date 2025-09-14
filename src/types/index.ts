@@ -34,8 +34,12 @@ export interface IOrderRequest {
   total: number;
 }
 
-
 export interface IOrderResponse {
   success: boolean;
   total: number;
+}
+
+export interface IValidationResult {
+  valid: boolean;
+  message?: string;
 }

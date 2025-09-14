@@ -123,6 +123,14 @@ Presenter - презентер содержит основную логику п
      address: string;
 }`
 
+### IValidationResult
+
+Интерфейс валидации введенных данных пользователя:
+`interface IValidationResult {
+  valid: boolean;
+  message?: string;
+}`
+
 ### Класс Buyer
 
 Класс Buyer имплементирует интерфейс IBuyer. Хранит данные о пользователе и позволяет получать, изменять, валидировать и сбрасывать эти данные.
@@ -208,7 +216,7 @@ Presenter - презентер содержит основную логику п
 
 ## Слой представления
 
-### Интерфейс IBaseCard
+### Интерфейс IBaseCardData
 Интерфейс для базовых данных карточки:
 
 `interface IBaseCardData {
@@ -289,25 +297,28 @@ Presenter - презентер содержит основную логику п
 - protected priceEl: HTMLElement - элемент цены
 - protected descEl: HTMLElement - элемент описания товара
 - protected buttonEl: HTMLButtonElement — кнопка «Купить/Удалить из корзины».
+- private inCart = false - наличие товара в корзине (для отображения кнопки);
+- private productId = '' - идентификатора товара для data (для 'basket:add'/'basket:remove').
 
 Содержит сеттеры/методы: 
+- public updateCartState(inCart: boolean) - выполняет метод по управлению видом кнопки;
+- private updateButtonView() - меняет текст на кнопке добавления/удаления товара;
 - set image(src: string) — ставит изображение + alt;
 - set category(value) — ставит категорию товара;
 - set description(text: string) — описание товара;
 - set price(value: number | null) — управляет текстом цены и состоянием кнопки: 
     -- null = «Бесценно», кнопка disabled, «Недоступно»;
     -- число = <value> синапсов, кнопка активна, «Купить».
-- Обработчик события клика на кнопку: добавление/удаление товара из корзины и закрытие модального окна.
 
-### Интерфейс ICartItems
+### Интерфейс ICartItem
 Интерфейс для строки корзины:
 
-`interface ICartItems extends IBaseCardData {
+`interface ICartItem extends IBaseCardData {
   price: number;
   index: number;
 }`
 
-### Класс CartItems
+### Класс CartItem
 Класс отвечает за отображение отдельной позиции товара в модальном окне корзины.
 
 Содержит поля:
@@ -317,7 +328,7 @@ Presenter - презентер содержит основную логику п
 
 Содержит сеттеры/методы:
 
-- set data(p: ICartItems) — применение id/title/index/price.
+- set data(p: ICartItem) — применение id/title/index/price.
 - set index(value: number) — присвоение порядковый номер.
 - set price(value: number) — отображение цены товара.
 - обработчик события клика по кнопке удаления, которое удаляет товар из корзины
@@ -474,15 +485,15 @@ Presenter - презентер содержит основную логику п
 
 - buildCatalogCard(p: IProduct): HTMLElement — создаёт CardCatalog из шаблона #card-catalog, заполняет через render({ id, title, price, image: CDN_URL + image, category }).
 
-- buildCartRow(p: IProduct, index: number): HTMLElement — создаёт строку корзины CartItems из #card-basket.
+- buildCartRow(p: IProduct, index: number): HTMLElement — создаёт строку корзины CartItem из #card-basket.
 
-- openPreview(product: IProduct): void — рендерит CardPreview (#card-preview), создает обработчик на кнопке, который вызывает basket:add или basket:remove и закрывает модальное окно.
+- openPreview(product: IProduct): void — отрисовывает содержимое CardPreview (#card-preview) в модальном окне: изображение, категория, название, детальное описание, цена и кнопка для добавления или удаления товара из корзины.
 
 - openCart(): void — отрисовывает CartView (#basket): список позиций, итог, доступность «Оформить», вставляет в ModalContainer.
 
-- openOrderAddress(): void — отрисовывает OrderAddressForm (#order) с текущим состоянием Buyer; управляет отображением ошибок.
+- openOrderAddress(): void — отрисовывает OrderAddressForm (#order) с полем для ввода адреса и выбором способа оплаты.
 
-- openOrderContacts(): void — рендерит OrderContactsForm (#contacts), синхронизирует возможное авто-заполнение браузера (что позволяет избежать проблемы с отключенной кнопкой при автозаполненных полях), управляет ошибками/отключением кнопки.
+- openOrderContacts(): void — рендерит OrderContactsForm (#contacts) с полями для email адреса и номера телефона, синхронизирует возможное авто-заполнение браузера (что позволяет избежать проблемы с отключенной кнопкой при автозаполненных полях), управляет ошибками/отключением кнопки.
 
 - openOrderSuccess(total: number): void — отрисовывает OrderSuccess (#success) и закрывает модальное окно при клике на кнопку.
 
